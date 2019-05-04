@@ -4,9 +4,9 @@ from django.db import models
 
 class Event(models.Model):
 
-	TO_BE_VALIDATED = 1
-	VALIDATED = 2
-	SOLVED = 3
+	TO_BE_VALIDATED = "TBV"
+	VALIDATED = "VAL"
+	SOLVED = "SOL"
 
 	STATE_CHOICES = (
 		(TO_BE_VALIDATED, 'To Be Validated'),
@@ -14,11 +14,11 @@ class Event(models.Model):
 		(SOLVED, 'Solved'),
 	)
 
-	CONSTRUCTION = 1
-	SPECIAL_EVENT = 2
-	INCIDENT = 3
-	WEATHER_CONDITION = 4
-	ROAD_CONDITION = 5
+	CONSTRUCTION = "CON"
+	SPECIAL_EVENT = "SPE"
+	INCIDENT = "INC"
+	WEATHER_CONDITION = "WEC"
+	ROAD_CONDITION = "ROC"
 
 	CATEGORY_CHOICES = (
 		(CONSTRUCTION, 'Construction'),
@@ -33,8 +33,8 @@ class Event(models.Model):
 	author = models.CharField(max_length=255, blank=False)
 	creation_date = models.DateTimeField(auto_now_add=True)
 	update_date = models.DateTimeField(auto_now=True)
-	state = models.IntegerField(choices=STATE_CHOICES, default=TO_BE_VALIDATED, null=False)
-	category = models.IntegerField(choices=CATEGORY_CHOICES, null=False)
+	state = models.CharField(choices=STATE_CHOICES, default=TO_BE_VALIDATED, max_length=3)
+	category = models.CharField(choices=CATEGORY_CHOICES, max_length=3, null=False)
 
 	class Meta:
 		ordering = ('-update_date',)
