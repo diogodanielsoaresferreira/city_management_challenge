@@ -25,14 +25,14 @@ class EventList(APIView):
 		if category is not None:
 			event = event.filter(category__iexact=category)
 
-		localization = self.request.query_params.get('localization', None)
+		location = self.request.query_params.get('location', None)
 		
-		if localization is not None:
+		if location is not None:
 			try:
-				localization_dict = literal_eval(localization)
+				location_dict = literal_eval(location)
 				
-				latitude = localization_dict["latitude"]
-				longitude = localization_dict["longitude"]
+				latitude = location_dict["latitude"]
+				longitude = location_dict["longitude"]
 
 				radius = self.request.query_params.get('radius', None)
 				
@@ -45,7 +45,7 @@ class EventList(APIView):
 					radius = 5
 
 				point = Point(longitude, latitude)
-				event = event.filter(localization__distance_lt=(point, Distance(km=radius)))
+				event = event.filter(location__distance_lt=(point, Distance(km=radius)))
 			except Exception as e:
 				pass
 

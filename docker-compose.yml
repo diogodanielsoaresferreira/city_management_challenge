@@ -7,7 +7,7 @@ services:
       - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db-cc:/dat
+      - db-vol:/data
     environment:
       - POSTGRES_PASSWD=postgres
 
@@ -21,4 +21,4 @@ services:
       - db
   
 volumes:
-  db-cc:
+  db-vol:

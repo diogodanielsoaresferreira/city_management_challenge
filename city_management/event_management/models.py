@@ -29,7 +29,7 @@ class Event(models.Model):
 	)
 
 	description = models.TextField(blank=False)
-	localization = geomodels.PointField(blank=True, null=True)
+	location = geomodels.PointField(blank=False)
 	author = models.CharField(max_length=255, blank=False)
 	creation_date = models.DateTimeField(auto_now_add=True)
 	update_date = models.DateTimeField(auto_now=True)
