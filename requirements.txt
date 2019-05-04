@@ -3,5 +3,5 @@ psycopg2
 djangorestframework
 markdown
 django-filter
-django-rest-swagger
 django-extra-fields
+drf-yasg

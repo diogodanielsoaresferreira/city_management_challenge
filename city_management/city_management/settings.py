@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
     'django.contrib.gis',
 ]
 
@@ -120,6 +121,12 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': None,
+    'USE_SESSION_AUTH': False,
+}
 
 
 # Internationalization

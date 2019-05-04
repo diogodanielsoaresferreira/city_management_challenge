@@ -7,13 +7,27 @@ from rest_framework import status
 from django.contrib.gis.measure import Distance
 from django.contrib.gis.geos import Point
 from ast import literal_eval
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 class EventList(APIView):
 	"""
-	List all events or create a new event
+	get:
+	Returns a list with all events. Supports query filtering by author, category or location (point or point and radius).
+
+	post:
+	Creates a new event.
 	"""
 
+
+	@swagger_auto_schema(manual_parameters=[
+		openapi.Parameter('author', openapi.IN_QUERY,  type=openapi.TYPE_STRING, required=False, description="Author of the event"),
+		openapi.Parameter('category', openapi.IN_QUERY,  type=openapi.TYPE_STRING, required=False, enum=["CON", "SPE", "INC", "WEC", "ROC"], description="Category of the event: 'CON' - Construction, 'SPE' - Special Event, 'INC' - Incident, 'WEC' - Weather Condition, 'ROC' - Road Condition."),
+		openapi.Parameter('location', openapi.IN_QUERY,  type=openapi.TYPE_STRING, required=False, description="Json string with latitude and longitude of the point to search around  (e.g. {'latitude': 37.8, 'longitude': -9.5})"),
+		openapi.Parameter('radius', openapi.IN_QUERY,  type=openapi.TYPE_NUMBER, required=False, description="Radius (in Km) to search around. If not location is specified but radius is not specified, it will be assumed radius=5")
+		], 
+		responses={200: 'list with all events'})
 	def get(self, request, format=None):
 		event = Event.objects.all()
 
@@ -52,7 +66,14 @@ class EventList(APIView):
 		serializer = EventSerializer(event, many=True)
 		return Response(serializer.data)
 
-
+	@swagger_auto_schema(#manual_parameters=[
+		#openapi.Parameter('description', openapi.IN_BODY, type=openapi.TYPE_STRING, required=True, description="Description of the event"),
+		#openapi.Parameter('author', openapi.IN_BODY, type=openapi.TYPE_STRING, required=True, description="Author of the event"),
+		#openapi.Parameter('category', openapi.IN_BODY, type=openapi.TYPE_STRING, required=True, enum=["CON", "SPE", "INC", "WEC", "ROC"], description="Category of the event ('CON' - Construction, 'SPE' - Special Event, 'INC' - Incident, 'WEC' - Weather Condition, 'ROC' - Road Condition)"),
+		#openapi.Parameter('location', openapi.IN_BODY, type=openapi.TYPE_STRING, required=True, description="Json string with latitude and longitude of the point to search around  (e.g. {'latitude': 37.8, 'longitude': -9.5})"),
+		#openapi.Parameter('state', openapi.IN_BODY, type=openapi.TYPE_STRING, required=False, enum=["TBV", "VAL", "SOL"], default=["TBV"], description="State of the event ('TBV' - To Be Validated, 'VAL' - Validated, 'SOL' - Solved)")
+		#],
+		responses={200: 'list with all events'})
 	def post(self, request, format=None):
 		serializer = EventSerializer(data=request.data)
 		if serializer.is_valid():
@@ -64,7 +85,11 @@ class EventList(APIView):
 
 class EventDetail(APIView):
 	"""
-	Retrieve or update an event
+	get:
+	Retrieves an event with the required id.
+
+	put:
+	Updates the state of an event.
 	"""
 
 	def get_object(self, pk):
