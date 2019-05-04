@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django.contrib.gis',
 ]
 
 MIDDLEWARE = [
@@ -82,23 +83,23 @@ DATABASES = {
     #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     #}
     
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': 5432,
-    }
-
     # 'default': {
-    #    'ENGINE': 'django.contrib.gis.db.backends.postgis',
-    #    'NAME': 'postgres',
-    #    'USER': 'postgres',
-    #    'PASSWORD': 'postgres',
-    #    'HOST': 'db',
-    #    'PORT': 5432,
-    #}
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'postgres',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'postgres',
+    #     'HOST': 'localhost',
+    #     'PORT': 5432,
+    # }
+
+    'default': {
+       'ENGINE': 'django.contrib.gis.db.backends.postgis',
+       'NAME': 'postgres',
+       'USER': 'postgres',
+       'PASSWORD': 'postgres',
+       'HOST': 'localhost',
+       'PORT': 5432,
+    }
 }
 
 

@@ -1,5 +1,5 @@
 from django.db import models
-#from django.contrib.gis.db import models as geomodels
+from django.contrib.gis.db import models as geomodels
 
 
 class Event(models.Model):
@@ -29,7 +29,7 @@ class Event(models.Model):
 	)
 
 	description = models.TextField(blank=False)
-	#localization = geomodels.PointField()
+	localization = geomodels.PointField(blank=True, null=True)
 	author = models.CharField(max_length=255, blank=False)
 	creation_date = models.DateTimeField(auto_now_add=True)
 	update_date = models.DateTimeField(auto_now=True)

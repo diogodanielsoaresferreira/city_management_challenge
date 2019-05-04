@@ -4,6 +4,9 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.gis.measure import Distance
+from django.contrib.gis.geos import Point
+from ast import literal_eval
 
 
 class EventList(APIView):
@@ -21,6 +24,30 @@ class EventList(APIView):
 		category = self.request.query_params.get('category', None)
 		if category is not None:
 			event = event.filter(category__iexact=category)
+
+		localization = self.request.query_params.get('localization', None)
+		
+		if localization is not None:
+			try:
+				localization_dict = literal_eval(localization)
+				
+				latitude = localization_dict["latitude"]
+				longitude = localization_dict["longitude"]
+
+				radius = self.request.query_params.get('radius', None)
+				
+				try:
+					radius = float(radius)
+				except Exception as e:
+					pass
+
+				if radius is None or not isinstance(radius, float): 
+					radius = 5
+
+				point = Point(longitude, latitude)
+				event = event.filter(localization__distance_lt=(point, Distance(km=radius)))
+			except Exception as e:
+				pass
 
 		serializer = EventSerializer(event, many=True)
 		return Response(serializer.data)
