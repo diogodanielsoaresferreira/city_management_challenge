@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  db:
+    image: geographica/postgis:tasty_termite
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db-cc:/dat
+    environment:
+      - POSTGRES_PASSWD=postgres
+
+  web_api:
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  
+volumes:
+  db-cc:
