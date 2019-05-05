@@ -18,3 +18,7 @@ There are four endpoints available:
 More information in the full API documentation: 0.0.0.0:8000/swagger/
 
 To run the environment, install docker-compose and run docker-compose up.
+
+The tests can be found at city_management/event_management/tests.py.
+To run the tests, go inside docker and run python3 manage.py test, or run this command outside docker (but first configure a local database).
+
