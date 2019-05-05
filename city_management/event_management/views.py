@@ -27,7 +27,7 @@ class EventList(APIView):
 		openapi.Parameter('location', openapi.IN_QUERY,  type=openapi.TYPE_STRING, required=False, description="Json string with latitude and longitude of the point to search around  (e.g. {'latitude': 37.8, 'longitude': -9.5})"),
 		openapi.Parameter('radius', openapi.IN_QUERY,  type=openapi.TYPE_NUMBER, required=False, description="Radius (in Km) to search around. If not location is specified but radius is not specified, it will be assumed radius=5")
 		], 
-		responses={200: 'list with all events'})
+		responses={200: EventSerializer(many=True)})
 	def get(self, request, format=None):
 		event = Event.objects.all()
 
@@ -66,14 +66,9 @@ class EventList(APIView):
 		serializer = EventSerializer(event, many=True)
 		return Response(serializer.data)
 
-	@swagger_auto_schema(#manual_parameters=[
-		#openapi.Parameter('description', openapi.IN_BODY, type=openapi.TYPE_STRING, required=True, description="Description of the event"),
-		#openapi.Parameter('author', openapi.IN_BODY, type=openapi.TYPE_STRING, required=True, description="Author of the event"),
-		#openapi.Parameter('category', openapi.IN_BODY, type=openapi.TYPE_STRING, required=True, enum=["CON", "SPE", "INC", "WEC", "ROC"], description="Category of the event ('CON' - Construction, 'SPE' - Special Event, 'INC' - Incident, 'WEC' - Weather Condition, 'ROC' - Road Condition)"),
-		#openapi.Parameter('location', openapi.IN_BODY, type=openapi.TYPE_STRING, required=True, description="Json string with latitude and longitude of the point to search around  (e.g. {'latitude': 37.8, 'longitude': -9.5})"),
-		#openapi.Parameter('state', openapi.IN_BODY, type=openapi.TYPE_STRING, required=False, enum=["TBV", "VAL", "SOL"], default=["TBV"], description="State of the event ('TBV' - To Be Validated, 'VAL' - Validated, 'SOL' - Solved)")
-		#],
-		responses={200: 'list with all events'})
+	@swagger_auto_schema(
+		request_body=EventSerializer,
+		responses={201: EventSerializer(many=True)})
 	def post(self, request, format=None):
 		serializer = EventSerializer(data=request.data)
 		if serializer.is_valid():
@@ -98,11 +93,20 @@ class EventDetail(APIView):
 		except Event.DoesNotExist:
 			raise Http404
 
+	@swagger_auto_schema(manual_parameters=[
+		openapi.Parameter('id', openapi.IN_PATH,  type=openapi.TYPE_INTEGER, description="Id of the event"),
+		],
+		responses={200: EventSerializer, 404: "{'detail': 'Not found'}"})
 	def get(self, request, pk, format=None):
 		event = self.get_object(pk)
 		serializer = EventSerializer(event)
 		return Response(serializer.data)
 
+	@swagger_auto_schema(manual_parameters=[
+		openapi.Parameter('id', openapi.IN_PATH,  type=openapi.TYPE_INTEGER, description="Id of the event"),
+		],
+		request_body=EventOnlyStateSerializer,
+		responses={200: EventOnlyStateSerializer, 404: "{'detail': 'Not found'}"})
 	def put(self, request, pk, format=None):
 		event = self.get_object(pk)
 		serializer = EventOnlyStateSerializer(event, data=request.data)

@@ -1,7 +1,6 @@
 from django.urls import path
 from django.conf.urls import include, url
 from event_management import views
-from rest_framework.urlpatterns import format_suffix_patterns
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -18,8 +17,6 @@ urlpatterns = [
     path('v1/events/', views.EventList.as_view()),
     path('v1/events/<int:pk>/', views.EventDetail.as_view()),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
 
 urlpatterns += [
     url(r'^swagger(?P<format>\.json|.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
